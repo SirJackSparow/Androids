@@ -1,57 +1,49 @@
 package com.example.androids.ui.login
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.androids.R
 import com.example.androids.ui.theme.Blue01
 import com.example.androids.ui.theme.BlueDark01
 import com.example.androids.ui.theme.lightBlue
 import com.example.androids.utils.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(nav: NavController) {
     var phoneNumber by remember { mutableStateOf("") }
+
+    var validatePhoneNumber by remember { mutableStateOf(false) }
+
+    val vm: LoginViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
+
+    val uiState by vm.uiState
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +106,7 @@ fun LoginScreen(nav: NavController) {
                             .alpha(0.5f),
                         shape = RoundedCornerShape(8.dp),
                         trailingIcon = {
-                            Icon(Icons.Filled.Add, "Add", tint = Blue)
+                            Icon(Icons.Filled.Phone, "Add", tint = Gray)
                         },
                         leadingIcon = { Text(text = "+10", color = Gray) },
                         colors = TextFieldDefaults.textFieldColors(
@@ -122,14 +114,33 @@ fun LoginScreen(nav: NavController) {
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        isError = validatePhoneNumber
                     )
                     Button(
-                        onClick = {  nav.navigate(Screen.Register.route) },
+                        onClick = {
+                            scope.launch {
+                                vm.login(phoneNumber)
+                                when (uiState) {
+                                    is LoginUiState.Success -> {
+                                        validatePhoneNumber = false
+                                        nav.navigate(Screen.Otp.withArgs((uiState as LoginUiState.Success).datax.phoneNumber ?: ""))
+                                    }
+                                    is LoginUiState.Error -> {
+                                        validatePhoneNumber = true
+                                    }
+                                    is LoginUiState.Loading -> {
+                                        validatePhoneNumber = false
+                                    }
+                                }
+                            }
+
+                        },
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(lightBlue),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 25.dp, horizontal = 20.dp),
+                            .padding(vertical = 20.dp, horizontal = 20.dp),
                     ) {
                         Text(
                             text = "Log In",

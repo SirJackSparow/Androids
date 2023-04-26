@@ -1,6 +1,7 @@
 package com.example.androids.ui.register
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -34,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,9 +60,16 @@ fun RegisterScreen(nav: NavController) {
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
 
+    var emailValidation by remember {
+        mutableStateOf(false)
+    }
+
     val vm: RegisterViewModel = hiltViewModel()
 
     val scope = rememberCoroutineScope()
+
+    val uiState by vm.uiState
+
 
     Box(
         modifier = Modifier
@@ -143,6 +154,7 @@ fun RegisterScreen(nav: NavController) {
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
+                        isError = emailValidation
                     )
                     TextField(
                         value = phoneNumber,
@@ -156,7 +168,11 @@ fun RegisterScreen(nav: NavController) {
                             .alpha(0.5f),
                         shape = RoundedCornerShape(8.dp),
                         trailingIcon = {
-                            Icon(Icons.Filled.Add, "Add", tint = Color.Blue)
+                            Icon(
+                                Icons.Filled.Phone,
+                                "Add",
+                                tint = Color.Gray
+                            )
                         },
                         leadingIcon = { Text(text = "+10", color = Color.Gray) },
                         colors = TextFieldDefaults.textFieldColors(
@@ -164,24 +180,31 @@ fun RegisterScreen(nav: NavController) {
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     )
                     Button(
                         onClick = {
                             scope.launch {
-                                val n  = AuthentificationModel(
+                                val userData = AuthentificationModel(
                                     phoneNumber = phoneNumber,
                                     email = email,
                                     username = userName
                                 )
-                                vm.register(
-                                   n
-                                )
-
-                                Log.e("tasg",n.toString())
-
+                                vm.register(userData)
+                                when (uiState) {
+                                    is RegisterUiState.Success -> {
+                                        nav.navigate(Screen.Login.route)
+                                    }
+                                    is RegisterUiState.Error -> {
+                                        emailValidation = true
+                                    }
+                                    is RegisterUiState.Loading -> {
+                                        emailValidation = false
+                                    }
+                                }
                             }
                         },
-                        shape = RoundedCornerShape(20), // = 50% percent
+                        shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(lightBlue),
                         modifier = Modifier
                             .fillMaxWidth()

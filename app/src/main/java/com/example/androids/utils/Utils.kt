@@ -7,13 +7,13 @@ object Utils {
 
 sealed class ResultValue<out R> {
     data class Success<out T>(val data: T) : ResultValue<T>()
-    data class Error(val errorMessage: String, val throwable: Throwable) : ResultValue<Nothing>()
+    data class Error(val errorMessage: String) : ResultValue<Nothing>()
 }
 
 suspend fun <T> getResultValue(invoke: suspend () -> T): ResultValue<T> {
     return runCatching {
         ResultValue.Success(invoke())
     }.getOrElse {
-        ResultValue.Error("Error", it)
+        ResultValue.Error("Error")
     }
 }
