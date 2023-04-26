@@ -193,7 +193,7 @@ fun RegisterScreen(nav: NavController) {
                                 vm.register(userData)
                                 when (uiState) {
                                     is RegisterUiState.Success -> {
-                                        nav.navigate(Screen.Login.route)
+                                        nav.navigate(Screen.Otp.withArgs(phoneNumber))
                                     }
                                     is RegisterUiState.Error -> {
                                         emailValidation = true
