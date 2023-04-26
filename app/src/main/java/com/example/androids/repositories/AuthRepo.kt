@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepo {
 
-    suspend fun getUser(userName: String, email: String ): Flow<ResultValue<AuthentificationModel>>
+    suspend fun getUser(phoneNumber: String,): Flow<ResultValue<AuthentificationModel>>
 
-    suspend fun addDataUser()
+    suspend fun addDataUser(authentificationModel: AuthentificationModel)
 }

@@ -4,7 +4,7 @@ import com.example.androids.data.model.AuthentificationModel
 
 interface LocalDataSource {
 
-    suspend fun getUser(user: AuthentificationModel)
+    suspend fun getUser(phoneNumber: String) : AuthentificationModel
 
     suspend fun addDataUser(user: AuthentificationModel)
 }

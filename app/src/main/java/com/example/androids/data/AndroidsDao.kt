@@ -9,8 +9,8 @@ import com.example.androids.data.model.AuthentificationModel
 @Dao
 interface AndroidsDao {
 
-    @Query("select * from auth where username = :userName and email = :email")
-    suspend fun getUser(userName: String, email: String) : AuthentificationModel
+    @Query("select * from auth where phoneNumber = :phoneNumber")
+    suspend fun getUser(phoneNumber: String) : AuthentificationModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addUser(authentificationModel: AuthentificationModel)

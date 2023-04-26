@@ -2,6 +2,7 @@ package com.example.androids.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,19 +35,22 @@ import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.androids.R
 import com.example.androids.ui.theme.Blue01
 import com.example.androids.ui.theme.BlueDark01
 import com.example.androids.ui.theme.lightBlue
+import com.example.androids.utils.Screen
 
 @Composable
-fun LoginScreen(nav: NavHostController) {
+fun LoginScreen(nav: NavController) {
     var phoneNumber by remember { mutableStateOf("") }
     Box(
         modifier = Modifier
@@ -54,12 +58,14 @@ fun LoginScreen(nav: NavHostController) {
             .background(BlueDark01)
     ) {
         Column(modifier = Modifier.fillMaxHeight()) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "Logo",
-                modifier = Modifier.padding(start = 20.dp, top = 20.dp)
+            Text(
+                text = "Q",
+                modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                fontSize = 100.sp,
+                color = Color.White,
+                fontFamily = FontFamily.Cursive
             )
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             Text(
                 text = "Welcome!",
@@ -101,16 +107,16 @@ fun LoginScreen(nav: NavHostController) {
                         onValueChange = {
                             phoneNumber = it
                         },
-                        label = { Text(text = "Phone Number", color = DarkGray) },
+                        label = { Text(text = "Phone Number", color = Gray) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 30.dp, start = 16.dp, end = 16.dp)
-                            .alpha(0.2f),
+                            .padding(top = 30.dp, start = 20.dp, end = 20.dp)
+                            .alpha(0.5f),
                         shape = RoundedCornerShape(8.dp),
                         trailingIcon = {
-                            Icon(Icons.Filled.Add, "", tint = Blue)
+                            Icon(Icons.Filled.Add, "Add", tint = Blue)
                         },
-                        leadingIcon = { Text(text = "+10", color = DarkGray) },
+                        leadingIcon = { Text(text = "+10", color = Gray) },
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = Blue01,
                             focusedIndicatorColor = Color.Transparent,
@@ -118,8 +124,8 @@ fun LoginScreen(nav: NavHostController) {
                         ),
                     )
                     Button(
-                        onClick = { },
-                        shape = RoundedCornerShape(20), // = 50% percent
+                        onClick = {  nav.navigate(Screen.Register.route) },
+                        shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(lightBlue),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -133,11 +139,16 @@ fun LoginScreen(nav: NavHostController) {
                     }
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = {
+                                nav.navigate(Screen.Register.route)
+                            }),
+                        horizontalArrangement = Arrangement.Center,
+
+                        ) {
                         Text(text = "Still have no account?", color = Gray)
-                        Text(text = "Register", color = Blue)
+                        Text(text = "Register", color = lightBlue)
                     }
 
                     Spacer(modifier = Modifier.height(120.dp))
