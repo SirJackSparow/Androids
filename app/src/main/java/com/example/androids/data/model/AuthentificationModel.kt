@@ -7,7 +7,7 @@ import com.example.androids.utils.Utils.EMPTY_STRING
 @Entity(tableName = "auth")
 data class AuthentificationModel(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long? = null,
     val username: String? = EMPTY_STRING,
     val email: String? = EMPTY_STRING,
     val phoneNumber: String? = EMPTY_STRING

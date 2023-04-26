@@ -1,5 +1,6 @@
 package com.example.androids.ui.register
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,20 +37,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.androids.data.model.AuthentificationModel
 import com.example.androids.ui.login.LoginScreen
 import com.example.androids.ui.theme.Blue01
 import com.example.androids.ui.theme.BlueDark01
 import com.example.androids.ui.theme.lightBlue
 import com.example.androids.utils.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(nav: NavController) {
+
     var userName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
+
+    val vm: RegisterViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -156,7 +166,21 @@ fun RegisterScreen(nav: NavController) {
                         ),
                     )
                     Button(
-                        onClick = { },
+                        onClick = {
+                            scope.launch {
+                                val n  = AuthentificationModel(
+                                    phoneNumber = phoneNumber,
+                                    email = email,
+                                    username = userName
+                                )
+                                vm.register(
+                                   n
+                                )
+
+                                Log.e("tasg",n.toString())
+
+                            }
+                        },
                         shape = RoundedCornerShape(20), // = 50% percent
                         colors = ButtonDefaults.buttonColors(lightBlue),
                         modifier = Modifier

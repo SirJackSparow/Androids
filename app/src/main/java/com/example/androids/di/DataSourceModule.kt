@@ -1,6 +1,7 @@
 package com.example.androids.di
 
 import com.example.androids.data.datasource.LocalDataSource
+import com.example.androids.data.datasource.LocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +14,5 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideLocalDataSource(localDataSource: LocalDataSource): LocalDataSource = localDataSource
+    fun provideLocalDataSource(localDataSource: LocalDataSourceImpl): LocalDataSource = localDataSource
 }
