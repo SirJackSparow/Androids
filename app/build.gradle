@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlinx-serialization'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -64,7 +65,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
     implementation "com.google.dagger:hilt-android:$version_hilt"
-    implementation "com.google.dagger:hilt-android-compiler:$version_hilt"
+    kapt "com.google.dagger:hilt-android-compiler:$version_hilt"
     implementation "androidx.hilt:hilt-navigation-compose:$compose_nav_hilt"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
